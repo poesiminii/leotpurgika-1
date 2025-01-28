@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include<stdbool.h>
 
-#define MEMORY_SIZE 512  // Total memory in KB
-#define TIME_QUANTUM 3   // Time quantum for Round Robin
+#define MEMORY_SIZE 512  // Total memory
+#define TIME_QUANTUM 3   // Time quantum
 
 void initialize_memory();
 bool allocate_memory(int pid, int memory_needed);
@@ -55,8 +55,8 @@ int main() {
 
     simulate();
 
-    free(memory);    // Free allocated memory for MemoryBlock
-    free(processes); // Free allocated memory for Process
+    free(memory);
+    free(processes);
     return 0;
 }
 
@@ -95,7 +95,7 @@ void deallocate_memory(int pid) {
         if (memory[i].pid == pid) {
             memory[i].free = true;
             memory[i].pid = -1;
-            // Merge adjacent free blocks
+            // Merge free blocks
             if (i > 0 && memory[i - 1].free) {
                 memory[i - 1].size += memory[i].size;
                 for (int j = i; j < MEMORY_SIZE - 1; j++) {
@@ -126,7 +126,7 @@ void simulate() {
             if (processes[i].remaining_time > 0) {
                 all_done = false;
 
-                // Load process into memory if not already loaded
+                // Load process in memory
                 if (processes[i].arrival_time <= current_time && !processes[i].in_memory) {
                     if (allocate_memory(processes[i].pid, processes[i].memory_needed)) {
                         processes[i].in_memory = true;
@@ -156,7 +156,6 @@ void simulate() {
             processes[running_process].remaining_time--;
             time_slice--;
 
-            // Process finishes execution
             if (processes[running_process].remaining_time == 0) {
                 printf("Time %d: Process %d finished execution.\n", current_time, processes[running_process].pid);
                 deallocate_memory(processes[running_process].pid);
